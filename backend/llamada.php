@@ -22,9 +22,42 @@ $recibo=$_POST['nombre1'];
 	function buscar($pokemon)
 	{
 		include("conexion/cone.php");
+		$registros= "SELECT * FROM `agenda` where estado = 'pendiente'  ";
+				$ejecucion = mysqli_query($conexion, $registros);
+				
+				$numero_registro=mysqli_num_rows($ejecucion);
+				$pagina=1;
+
+				if (isset($_GET['id'])) 
+				{
+
+				$pagina=$_GET['id'];
+
+				}
+
+		$tamano_pagina=5;
+		
+		$empezar_desde=($pagina-1)*$tamano_pagina;//0x5=0,1x5=5
+		$total_paginas=ceil($numero_registro/$tamano_pagina);
+		$numero=1;
+
+		
+			while ( $numero  <= $total_paginas) 
+			{
+			?>
+						<ul class="pagination">
+							<li><a href="http://freddymp.byethost7.com/?id=<?php echo $numero?> "><?=  $numero ?></a></li>
+						</ul>
+
+				<?php
+				$numero++;
+			}
+
+
 		$insertar="INSERT INTO `agenda`(`Tarea`,`estado`) VALUES ('$pokemon','pendiente')";
 		$insert=mysqli_query($conexion,$insertar);
-		$traer= "SELECT * FROM `agenda` where estado = 'pendiente'  ";
+		
+		$traer= "SELECT * FROM `agenda` where estado = 'pendiente' LIMIT $empezar_desde, $tamano_pagina ";
 		$ejec= mysqli_query($conexion, $traer);
 		
 		?>

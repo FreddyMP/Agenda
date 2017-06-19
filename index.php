@@ -1,3 +1,4 @@
+
 <html>
 <head> 
 
@@ -49,10 +50,42 @@ $("#agregar").click(function(e) {
 
 		<?php
 				include("backend/conexion/cone.php");
-				$traer= "SELECT * FROM `agenda` where estado = 'pendiente'  ";
-				$ejec= mysqli_query($conexion, $traer);
+			
+				$registros= "SELECT * FROM `agenda` where estado = 'pendiente'  ";
+				$ejecucion = mysqli_query($conexion, $registros);
+				
+				$numero_registro=mysqli_num_rows($ejecucion);
+				$pagina=1;
+
+				if (isset($_GET['id'])) 
+				{
+
+				$pagina=$_GET['id'];
+
+				}
+
+		$tamano_pagina=5;
 		
-				while($row=mysqli_fetch_array($ejec))
+		$empezar_desde=($pagina-1)*$tamano_pagina;//0x5=0,1x5=5
+		$total_paginas=ceil($numero_registro/$tamano_pagina);
+		$numero=1;
+
+		
+			while ( $numero  <= $total_paginas) 
+			{
+			?>
+						<ul class="pagination">
+							<li><a href="http://freddymp.byethost7.com/?id=<?php echo $numero?> "><?=  $numero ?></a></li>
+						</ul>
+
+				<?php
+				$numero++;
+			}
+
+				$traer= "SELECT * FROM `agenda` where estado = 'pendiente' LIMIT $empezar_desde, $tamano_pagina  ";
+				$ejec= mysqli_query($conexion, $traer);
+
+						while($row=mysqli_fetch_array($ejec))
 				{
           		?>
           		<br>
@@ -63,8 +96,9 @@ $("#agregar").click(function(e) {
 
       					  <?php
       				  ?>
+		
       			  		</div>
-      			 	 <?php
+      			 	 <?php 
 
 				}
 		?>
